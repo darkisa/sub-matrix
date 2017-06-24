@@ -1,7 +1,10 @@
 matrix = [
-  [1,0,0,0,0],
-  [1,0,0,1,1],
-  [1,1,1,1,1],
+  [0,0,1,0,0],
+  [0,0,1,0,0],
+  [0,0,1,0,1],
+  [0,0,1,1,1],
+  [0,1,1,1,1],
+  [0,1,1,1,1],
   [1,1,1,1,1]
 ]
 
@@ -18,42 +21,36 @@ def calculate_histogram(matrix)
         histogram[index] += value
       end
     end
-
-    #once the histogram is created, its sent to the calculate area method
-    area = calculate_area(histogram, area)
   end
-
-  puts area
+    #once the histogram is created, its sent to the calculate area method
+    largest_rectangle(histogram)
 end
 
 #this method iterates over the histogram to set the width and height of the largest matrix
-def calculate_area(histogram, area)
-  width = 0
-  height = 0
-  
+def largest_rectangle(histogram)
+  position = []
+  height = []
+  area = 0
+  pos = 0
+
   histogram.each_with_index do |value, index|
-    if value == 0
-      update_area(height, width, area) #call to update the largest area if the new value is larger
-      width = 0
-      height = 0
-    else
-      width += 1
-      if height > value || height == 0
-        height = value
+    
+    if index == 0 || value > height.last
+      height.push(value)
+      position.push(index)
+    elsif value < height[index - 1]
+      while height.length && value < height.last do
+        area = [height.pop * (index - position.pop), area].max
       end
+      height.push(value)
+      position.push(index)
     end
-  end  
-
-  update_area(height, width, area)
-end
-
-#updates the area if a larger area is calculated 
-def update_area(height, width, area)
-  if area < (width * height)
-    area = width * height
+    pos = index + 1
   end
-  area
+    while position.last do
+        area = [height.pop * (pos - position.pop), area].max
+      end
+  puts "The maximum size sub-matrix is: #{area}"
 end
-
 
 calculate_histogram(matrix)
