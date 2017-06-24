@@ -1,8 +1,8 @@
 matrix = [
-  [0,0,1,0,0],
-  [0,0,1,0,0],
-  [0,0,1,0,1],
-  [0,0,1,1,1],
+  [0,0,0,0,0],
+  [0,0,0,0,0],
+  [0,1,0,1,0],
+  [0,1,1,1,0],
   [0,1,1,1,1],
   [0,1,1,1,1],
   [1,1,1,1,1]
@@ -31,24 +31,25 @@ def largest_rectangle(histogram)
   position = []
   height = []
   area = 0
-  pos = 0
+  last_position = 0
+  last_index = 0
 
   histogram.each_with_index do |value, index|
-    
     if index == 0 || value > height.last
       height.push(value)
       position.push(index)
-    elsif value < height[index - 1]
+    elsif value < height.last
       while height.length && value < height.last do
+        last_position = position.last
         area = [height.pop * (index - position.pop), area].max
       end
       height.push(value)
-      position.push(index)
+      position.push(last_position)
     end
-    pos = index + 1
+    last_index = index + 1
   end
     while position.last do
-        area = [height.pop * (pos - position.pop), area].max
+        area = [height.pop * (last_index - position.pop), area].max
       end
   puts "The maximum size sub-matrix is: #{area}"
 end
